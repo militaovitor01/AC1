@@ -1,0 +1,30 @@
+Vitor Dias de Britto Militão
+Ciencia da Computação - 806482
+
+Exercicio 3a:
+a.) 61(10) = 331(4)
+operação  quociente  resto
+61/4 =    15         1
+15/4 =    3          3
+3/4 =     0          3      
+
+b.) 54(10) = 66(8)
+operação  quociente  resto
+54/8 =    6          6
+6/8 =     0          6
+
+c.) 77(10) = 4D(16)
+operação  quociente  resto
+77/16 =   4          13
+4/16 =    0          4
+ 
+d.) 151(10) = 97(16)
+operação  quociente  resto
+151/16 =  9          7
+9/16 =    0          9
+
+e.) 738(10) = 2E2(16)
+operação  quociente  resto
+738/16 =  46         2
+46/16 =   2          14
+2/16 =    0          2
