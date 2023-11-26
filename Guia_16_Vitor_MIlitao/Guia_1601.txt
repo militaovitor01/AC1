@@ -1,0 +1,50 @@
+; Programa para calcular o produto (IMUL) de dois dados de 8 bits
+; Dados de entrada: dado01 e dado02
+; Resultado: dado03 = dado01 * dado02
+
+JMP MAIN ; Ir para a área principal do programa
+
+; Função para multiplicação (IMUL)
+; A entrada contém o multiplicando (dado01) e o multiplicador (dado02)
+; A saída é o resultado da multiplicação (dado03)
+IMUL_FUNC:
+    MVI H, 00 ; Zerar o registrador de resultado (H)
+    MVI L, 00 ; Zerar o registrador de resultado (L)
+    MVI C, 08 ; Inicializar o contador de bits
+
+MULTIPLY_LOOP:
+    MOV A, D ; Carregar o multiplicador (dado02) para o registrador A
+    RLC ; Rodar o bit mais significativo para o Carry
+    MOV D, A ; Atualizar o multiplicador no registrador D
+
+    JZ END_MULTIPLY ; Se o multiplicador (dado02) for zero, terminar a multiplicação
+
+    MOV A, H ; Carregar o resultado parcial (parte alta) para o registrador A
+    RLC ; Rodar o bit mais significativo para o Carry
+    MOV H, A ; Atualizar a parte alta do resultado
+
+    MOV A, L ; Carregar o resultado parcial (parte baixa) para o registrador A
+    RLC ; Rodar o bit mais significativo para o Carry
+    MOV L, A ; Atualizar a parte baixa do resultado
+
+    DCR C ; Decrementar o contador de bits
+    JNZ MULTIPLY_LOOP ; Se o contador não for zero, continuar o loop de multiplicação
+
+END_MULTIPLY:
+    RET ; Retornar da função
+
+MAIN:
+    LXI H, 0050 ; HL = 0050h, endereço do dado01
+    MOV B, M ; B = MEM[HL], multiplicando (dado01)
+    INX H ; HL = HL + 1
+    MOV C, M ; C = MEM[HL], multiplicador (dado02)
+
+    CALL IMUL_FUNC ; Chamar a função de multiplicação
+
+    SHLD 0052 ; Armazenar o resultado (dado03) em 0052h
+    HLT ; Terminar a execução do programa
+
+    ; Área de dados
+    ; dado01: 03h ; primeiro dado em hexadecimal
+    ; dado02: 04h ; segundo dado em hexadecimal
+    ; dado03: 00h ; resultado em hexadecimal

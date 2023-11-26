@@ -1,0 +1,57 @@
+; Programa para encontrar o maior valor em um arranjo usando Bubble Sort
+; Dados de entrada: dado01 = endereço do array, dado02 = tamanho do array
+; Resultado: dado03 = maior valor no array
+
+JMP MAIN ; Ir para a área principal do programa
+
+; Função para trocar dois elementos no array
+SWAP:
+    MOV A, M ; Carregar o primeiro elemento para o registrador A
+    MOV B, H ; Carregar o segundo elemento para o registrador B
+    MOV M, B ; Armazenar o segundo elemento na posição do primeiro
+    MOV H, A ; Armazenar o primeiro elemento na posição do segundo
+    RET ; Retornar da função
+
+; Função para ordenar o array usando Bubble Sort e encontrar o maior valor
+BUBBLE_SORT:
+    MVI D, 00 ; Inicializar o índice externo
+    OUTER_LOOP:
+        MVI E, 00 ; Inicializar o índice interno
+        INNER_LOOP:
+            LXI H, 0000 ; Inicializar o ponteiro para o array
+            MOV B, D ; Carregar o índice externo para o registrador B
+            ADD H ; Adicionar o índice externo ao ponteiro
+            MOV L, M ; Carregar o primeiro elemento para o registrador L
+            MOV H, B ; Carregar o índice externo para o registrador H
+            ADD H ; Adicionar o índice externo ao ponteiro
+            MOV A, M ; Carregar o segundo elemento para o registrador A
+            CMP L ; Comparar os dois elementos
+            JZ NO_SWAP ; Se forem iguais, não trocar
+            JC NO_SWAP ; Se o primeiro for maior, não trocar
+
+            CALL SWAP ; Chamar a função para trocar os elementos
+
+            NO_SWAP:
+            INX E ; Incrementar o índice interno
+            CMP E ; Comparar o índice interno com o tamanho do array
+            JNZ INNER_LOOP ; Se não atingiu o final do array, continuar
+
+        DCR B ; Decrementar o índice externo
+        CMP B ; Comparar o índice externo com zero
+        JNZ OUTER_LOOP ; Se não atingiu o início do array, continuar
+
+    RET ; Retornar da função
+
+MAIN:
+    LXI H, 0050 ; HL = 0050h, endereço do array
+    MOV B, M ; B = MEM[HL], tamanho do array
+    CALL BUBBLE_SORT ; Chamar a função Bubble Sort
+
+    MOV A, H ; Carregar o maior valor no array para o registrador A
+    STA 0052 ; Armazenar o maior valor em 0052h
+    HLT ; Terminar a execução do programa
+
+    ; Área de dados
+    ; dado01: 04h, 02h, 08h, 05h ; array de exemplo
+    ; dado02: 04h ; tamanho do array
+    ; dado03: 08h ; maior valor no array

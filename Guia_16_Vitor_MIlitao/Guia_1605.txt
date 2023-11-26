@@ -1,0 +1,25 @@
+; Programa para converter um valor em BCD para o hexadecimal equivalente
+; Dados de entrada: dado01 = valor em BCD (Binary Coded Decimal)
+; Resultado: dado02 = valor em hexadecimal equivalente
+
+JMP MAIN ; Ir para a área principal do programa
+
+; Função para converter um dígito BCD para hexadecimal
+BCD_TO_HEX:
+    MOV A, 0FH ; Máscara para obter os 4 bits mais significativos
+    ANI M ; Aplicar a máscara ao dígito BCD
+    MOV B, A ; Armazenar o resultado no registrador B
+    MOV A, M ; Carregar o dígito BCD original
+    ANI 0FH ; Máscara para obter os 4 bits menos significativos
+    ADD B ; Adicionar os dois resultados
+    RET ; Retornar da função
+
+MAIN:
+    MOV A, 24H ; Carregar o valor em BCD (24) para o registrador A
+    CALL BCD_TO_HEX ; Chamar a função para converter o dígito BCD
+    STA 0052 ; Armazenar o resultado (18) em 0052h
+    HLT ; Terminar a execução do programa
+
+    ; Área de dados
+    ; dado01: 24h ; valor em BCD
+    ; dado02: 18h ; resultado em hexadecimal equivalente

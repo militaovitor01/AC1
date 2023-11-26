@@ -1,0 +1,69 @@
+; Programa para calcular o resto inteiro (IMOD) de dois dados de 8 bits
+; Dados de entrada: dado01 (dividendo) e dado02 (divisor)
+; Resultado: dado03 = dado01 % dado02 (resto inteiro)
+
+JMP MAIN ; Ir para a área principal do programa
+
+; Função para cálculo do resto inteiro (IMOD)
+; A entrada contém o dividendo (dado01) e o divisor (dado02)
+; A saída é o resto inteiro (dado03)
+IMOD_FUNC:
+    MVI D, 00 ; Inicializar o registrador de quociente (D)
+    MVI E, 00 ; Inicializar o registrador de resto (E)
+
+    MOV A, D ; Carregar o quociente parcial (D) para o registrador A
+    MOV B, E ; Carregar o resto parcial (E) para o registrador B
+    CMP E ; Comparar o quociente com o resto
+    JC SKIP_SUBTRACTION ; Se o quociente for menor que o resto, pular a subtração
+
+    MOV A, D ; Carregar o quociente parcial (D) para o registrador A
+    SUB E ; Subtrair o resto do quociente
+    MOV D, A ; Atualizar o quociente com o resultado da subtração
+
+    SKIP_SUBTRACTION:
+    MOV A, H ; Carregar o próximo dígito do dividendo (dado01) para o registrador A
+    MOV B, E ; Carregar o resto parcial (E) para o registrador B
+    MOV C, 00 ; Inicializar o registrador de empréstimo (C)
+    SUB E ; Subtrair o resto do próximo dígito do dividendo
+    MOV E, A ; Atualizar o resto com o resultado da subtração
+
+    MOV A, D ; Carregar o quociente parcial (D) para o registrador A
+    MOV B, E ; Carregar o resto parcial (E) para o registrador B
+    CMP E ; Comparar o quociente com o resto
+    JC SKIP_SUBTRACTION2 ; Se o quociente for menor que o resto, pular a subtração
+
+    MOV A, D ; Carregar o quociente parcial (D) para o registrador A
+    SUB E ; Subtrair o resto do quociente
+    MOV D, A ; Atualizar o quociente com o resultado da subtração
+
+    SKIP_SUBTRACTION2:
+    MOV A, L ; Carregar o próximo dígito do dividendo (dado01) para o registrador A
+    MOV B, E ; Carregar o resto parcial (E) para o registrador B
+    MOV C, 00 ; Inicializar o registrador de empréstimo (C)
+    SUB E ; Subtrair o resto do próximo dígito do dividendo
+    MOV E, A ; Atualizar o resto com o resultado da subtração
+
+    DCR C ; Decrementar o contador de bits
+    JZ END_IMOD ; Se todos os dígitos foram processados, terminar o cálculo do resto
+
+    JMP IMOD_FUNC ; Continuar a função de cálculo do resto
+
+END_IMOD:
+    MOV A, E ; Carregar o resultado final (resto) para o registrador A
+    RET ; Retornar da função
+
+MAIN:
+    LXI H, 0050 ; HL = 0050h, endereço do dado01 (dividendo)
+    MOV A, M ; Carregar o primeiro dígito do dividendo (dado01) para o registrador A
+    MOV B, 00 ; Inicializar o registrador de divisor (dado02)
+    MOV C, M ; Carregar o primeiro dígito do divisor (dado02) para o registrador C
+
+    CALL IMOD_FUNC ; Chamar a função de cálculo do resto
+
+    SHLD 0052 ; Armazenar o resto inteiro (dado03) em 0052h
+    HLT ; Terminar a execução do programa
+
+    ; Área de dados
+    ; dado01: 0Ah ; primeiro dado em hexadecimal (dividendo)
+    ; dado02: 03h ; segundo dado em hexadecimal (divisor)
+    ; dado03: 00h ; resultado em hexadecimal (resto inteiro)
